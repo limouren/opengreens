@@ -25,7 +25,7 @@ function retryDelay(header: string | null): number | null {
   return Number.isSafeInteger(seconds) ? Math.max(1, seconds) : 60;
 }
 
-async function call(path: string, { token, body }: { token?: string; body?: object } = {}): Promise<unknown> {
+async function send(path: string, { token, body }: { token?: string; body?: object }): Promise<Response> {
   const headers: Record<string, string> = { ...appHeaders };
   if (token) {
     headers.Authorization = `Bearer ${token}`;
@@ -49,6 +49,11 @@ async function call(path: string, { token, body }: { token?: string; body?: obje
     await response.body?.cancel();
     throw new GreensRejected(response.status, retryDelay(response.headers.get('Retry-After')));
   }
+  return response;
+}
+
+async function call(path: string, options: { token?: string; body?: object } = {}): Promise<unknown> {
+  const response = await send(path, options);
   try {
     return await response.json();
   } catch (error) {
@@ -72,7 +77,9 @@ const isId = (value: unknown): value is number => Number.isSafeInteger(value);
 const isTtl = (value: unknown): value is number => typeof value === 'number' && value > 0 && Number.isFinite(value);
 
 export async function sendSms(mobile: string): Promise<void> {
-  await call('verify_code', { body: { mobile, zone: '852' } });
+  // GREENS replies with an empty body.
+  const response = await send('verify_code', { body: { mobile, zone: '852' } });
+  await response.body?.cancel();
 }
 
 export async function signIn(mobile: string, code: string, deviceId: string) {
