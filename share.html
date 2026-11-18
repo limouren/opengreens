@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#17603e">
+  <meta name="theme-color" content="#ffffff">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="綠綠賞二維碼">
   <title>綠綠賞二維碼</title>
@@ -11,20 +11,24 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <script type="module" src="/src/share.ts"></script>
 </head>
-<body>
-  <main class="share">
-    <header>
-      <p class="eyebrow">綠綠賞</p>
-      <h1>二維碼</h1>
-      <p id="owner" class="hint"></p>
-    </header>
-    <div class="qr-frame">
-      <canvas id="qr" role="img" aria-label="綠綠賞動態二維碼" hidden></canvas>
-      <p id="placeholder" class="hint">載入中…</p>
-    </div>
-    <p id="countdown"></p>
-    <button id="refresh" type="button">立即更新</button>
-    <p id="status" role="status"></p>
+<body class="bg-white">
+  <main class="flex min-h-dvh flex-col items-center justify-center gap-5 p-4">
+    <h1 class="sr-only">綠綠賞二維碼</h1>
+    <button id="qr-button" type="button" aria-label="更新二維碼"
+      class="grid aspect-square w-[min(85vw,24rem)] cursor-pointer place-items-center *:col-start-1 *:row-start-1">
+      <canvas id="qr" class="h-auto! w-full! transition-[opacity,filter] [image-rendering:pixelated]" hidden></canvas>
+      <span id="spinner" class="grid size-20 place-items-center rounded-full bg-white shadow-lg">
+        <span class="loading loading-spinner loading-xl text-primary"></span>
+      </span>
+      <svg id="retry" class="size-12 text-base-content/40" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden>
+        <path d="M21 12a9 9 0 1 1-2.6-6.4L21 8M21 3v5h-5"/>
+      </svg>
+    </button>
+    <progress id="countdown" class="progress progress-primary invisible h-1 w-[min(85vw,24rem)]"
+      aria-label="距離自動更新的時間" value="0" max="1"></progress>
+    <p id="owner" lang="en" class="tabular-nums text-base-content/50"></p>
+    <p id="status" role="status" class="text-center text-sm text-error empty:hidden"></p>
     <noscript>此網頁需要 JavaScript 才能顯示二維碼。</noscript>
   </main>
 </body>

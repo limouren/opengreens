@@ -1,69 +1,22 @@
-:root {
-  font-family: system-ui, -apple-system, "PingFang HK", "Noto Sans HK", "Microsoft JhengHei", sans-serif;
-  color: #152d23;
-  background: #eef5ef;
+/* Explicit sources keep the 600 KB worker-configuration.d.ts from adding stray classes. */
+@import "tailwindcss" source(none);
+@source "../index.html";
+@source "../share.html";
+@source "./";
+
+@plugin "daisyui" {
+  themes: false;
+}
+@plugin "daisyui/theme" {
+  name: "light";
+  default: true;
+  --color-primary: #17603e;
+  --color-primary-content: #ffffff;
+  /* The built-in error colour is too light for small text on white. */
+  --color-error: #b42318;
+  --color-error-content: #ffffff;
 }
 
-* { box-sizing: border-box; }
-[hidden] { display: none !important; }
-body { margin: 0; }
-
-main {
-  max-width: 34rem;
-  margin: clamp(0rem, 6vw, 4rem) auto;
-  padding: clamp(1rem, 5vw, 2rem);
-  background: #fff;
-  border: 1px solid #cfe0d4;
-  border-radius: 1rem;
+@theme {
+  --font-sans: system-ui, -apple-system, "PingFang HK", "Noto Sans HK", "Microsoft JhengHei", sans-serif;
 }
-
-header { margin-bottom: 1.5rem; }
-h1 { margin: 0; font-size: clamp(1.8rem, 6vw, 2.4rem); }
-h2 { font-size: 1.2rem; }
-.eyebrow { margin: 0 0 .25rem; color: #326b4c; font-size: .8rem; font-weight: 700; letter-spacing: .08em; }
-label { display: block; font-weight: 650; margin-bottom: .4rem; }
-.hint { color: #42594c; font-size: .9rem; }
-.notice { padding: .7rem .85rem; background: #fff4dc; border-radius: .5rem; }
-
-.mobile-field, .actions {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: .5rem;
-}
-.actions { margin: .85rem 0; }
-
-input, button, .button { font: inherit; border-radius: .5rem; padding: .65rem .8rem; }
-input { width: 12rem; max-width: 100%; border: 1px solid #729080; }
-#link { width: 100%; }
-#code { margin-bottom: .85rem; }
-button, .button {
-  display: inline-block;
-  color: white;
-  background: #17603e;
-  border: 1px solid #17603e;
-  cursor: pointer;
-  text-decoration: none;
-}
-button.secondary, .button.secondary { color: #17492e; background: white; }
-button:disabled { opacity: .55; cursor: default; }
-:focus-visible { outline: 3px solid #17603e; outline-offset: 3px; }
-#status:not(:empty) { margin-bottom: 0; padding: .7rem .85rem; background: #eaf4ec; border-radius: .5rem; }
-
-.share { text-align: center; }
-.share header { margin-bottom: 1rem; }
-.qr-frame {
-  display: grid;
-  place-items: center;
-  min-height: min(85vw, 24rem);
-  background: #fff;
-  border-radius: .5rem;
-}
-/* The QR library sets an inline pixel size; scale it to the screen instead. */
-#qr {
-  width: min(85vw, 24rem) !important;
-  height: auto !important;
-  image-rendering: pixelated;
-}
-#countdown { min-height: 1.5em; font-variant-numeric: tabular-nums; }
-.share #refresh { width: 100%; max-width: 20rem; }

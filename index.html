@@ -3,62 +3,73 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#17603e">
+  <meta name="theme-color" content="#ffffff">
   <title>綠綠賞二維碼分享</title>
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <script type="module" src="/src/main.ts"></script>
 </head>
-<body>
-  <main>
-    <header>
-      <p class="eyebrow">綠綠賞 · 家人分享</p>
-      <h1>二維碼分享</h1>
-    </header>
+<body class="flex min-h-dvh flex-col bg-base-100">
+  <main class="mx-auto flex w-full max-w-sm flex-1 flex-col items-center justify-center gap-8 p-6">
+    <h1 class="sr-only">綠綠賞二維碼分享</h1>
+    <img src="/icon.svg" alt="" class="size-16 rounded-2xl">
+    <span id="loading" class="loading loading-spinner loading-lg text-primary"></span>
 
-    <section id="sign-in" aria-labelledby="sign-in-title" hidden>
-      <h2 id="sign-in-title">以短訊驗證碼登入</h2>
-      <p id="reauth-note" class="notice" hidden>你的綠綠賞登入已失效，家人暫時無法顯示二維碼。請重新驗證。分享連結會保持不變。</p>
-      <form id="sms-form" autocomplete="off">
-        <label for="mobile">香港手機號碼</label>
-        <div class="mobile-field">
-          <span aria-hidden="true">+852</span>
-          <input id="mobile" type="tel" inputmode="numeric" maxlength="8" pattern="[4-9][0-9]{7}"
-            aria-describedby="mobile-hint" required>
-        </div>
-        <p id="mobile-hint" class="hint">請輸入以 4 至 9 開頭的 8 位數字。</p>
-        <button id="send" type="submit">發送驗證碼</button>
+    <section id="sign-in" class="w-full" hidden>
+      <p id="reauth-note" role="alert" class="alert alert-warning mb-4" hidden>綠綠賞登入已失效，請重新驗證。</p>
+      <form id="sms-form" class="join w-full" autocomplete="off">
+        <label class="input input-lg join-item w-full">
+          <span class="text-base-content/50">+852</span>
+          <input id="mobile" type="tel" inputmode="numeric" pattern="[4-9][0-9]{7}" aria-label="香港手機號碼"
+            class="tabular-nums" required>
+        </label>
+        <button id="send" type="submit" class="btn btn-primary btn-lg join-item min-w-16" aria-label="發送驗證碼">
+          <span class="loading loading-spinner" hidden></span>
+          <svg data-icon class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          <span data-wait class="tabular-nums"></span>
+        </button>
       </form>
 
-      <form id="code-form" autocomplete="off" hidden>
-        <p id="code-hint"></p>
-        <label for="code">短訊驗證碼</label>
-        <input id="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="128"
-          spellcheck="false" required>
-        <div class="actions">
-          <button id="submit-code" type="submit">登入</button>
-          <button id="resend" type="button" class="secondary">重新發送</button>
-          <button id="change-number" type="button" class="secondary">更改號碼</button>
-        </div>
+      <form id="code-form" class="flex flex-col items-center gap-3" autocomplete="off" hidden>
+        <button id="change-number" type="button" class="btn btn-ghost btn-sm tabular-nums" aria-label="更改號碼">
+          <span id="pending-mobile"></span>
+          <svg class="size-4 opacity-50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        </button>
+        <label class="input input-lg w-full">
+          <input id="code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}"
+            aria-label="短訊驗證碼" spellcheck="false" required
+            class="ps-[.5em] text-center text-2xl tracking-[.5em] tabular-nums">
+          <span class="loading loading-spinner" hidden></span>
+        </label>
+        <button id="resend" type="button" class="btn btn-ghost btn-sm text-base-content/60">
+          <span class="loading loading-spinner loading-xs" hidden></span>
+          <span data-label></span>
+        </button>
       </form>
     </section>
 
-    <section id="account" aria-labelledby="account-title" hidden>
-      <h2 id="account-title" tabindex="-1">你的分享連結</h2>
-      <p id="account-mobile" class="hint"></p>
-      <label for="link">連結</label>
-      <input id="link" type="url" readonly>
-      <div class="actions">
-        <button id="share" type="button" hidden>分享</button>
-        <button id="copy" type="button">複製</button>
-        <a id="open" class="button secondary" target="_blank" rel="noreferrer">顯示二維碼</a>
-      </div>
-      <p class="hint">任何人取得此連結，都可以顯示你的綠綠賞二維碼。請只與家人分享。</p>
-      <button id="sign-out" type="button" class="secondary">登出</button>
+    <section id="account" class="w-full" hidden>
+      <button id="share" type="button" class="btn btn-primary btn-lg btn-block">
+        <svg data-icon="share" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden><path d="M12 15V3M8 7l4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>
+        <svg data-icon="copy" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>
+        <svg data-icon="done" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden><path d="m5 12 5 5L20 7"/></svg>
+        <span data-label></span>
+      </button>
+      <input id="link" type="url" readonly aria-label="分享連結" class="input mt-3 w-full" hidden>
     </section>
 
-    <p id="status" role="status"></p>
+    <p id="status" role="status" class="text-center text-sm text-error empty:hidden"></p>
     <noscript>此網頁需要 JavaScript 才能運作。</noscript>
   </main>
+
+  <footer id="account-footer" class="flex items-center justify-center gap-2 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] text-sm text-base-content/50" hidden>
+    <span id="account-mobile" class="tabular-nums"></span>
+    <button id="sign-out" type="button" class="btn btn-ghost btn-xs">登出</button>
+  </footer>
 </body>
 </html>

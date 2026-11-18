@@ -8,27 +8,38 @@ interface QrResponse {
   mobileSuffix: string;
 }
 
-const byId = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+const byId = <T extends Element>(id: string) => document.getElementById(id) as unknown as T;
+const qrButton = byId<HTMLButtonElement>('qr-button');
 const canvas = byId<HTMLCanvasElement>('qr');
-const placeholder = byId<HTMLParagraphElement>('placeholder');
-const countdown = byId<HTMLParagraphElement>('countdown');
-const refreshButton = byId<HTMLButtonElement>('refresh');
+const spinner = byId<HTMLSpanElement>('spinner');
+const retryIcon = byId<SVGElement>('retry');
+const countdown = byId<HTMLProgressElement>('countdown');
 const status = byId<HTMLParagraphElement>('status');
 const linkId = location.pathname.split('/')[2];
 
 let deadline: number | undefined;
+let hasQr = false;
 let busy = false;
 let timer: number | undefined;
 let wakeLock: WakeLockSentinel | undefined;
 
-function showQr(visible: boolean, message = ''): void {
-  canvas.hidden = !visible;
-  placeholder.hidden = visible;
-  placeholder.textContent = message;
+function render(): void {
+  const live = deadline !== undefined;
+  canvas.hidden = !hasQr;
+  canvas.classList.toggle('opacity-20', busy || !live);
+  canvas.classList.toggle('blur-sm', busy || !live);
+  spinner.hidden = !busy;
+  retryIcon.toggleAttribute('hidden', busy || live);
+  qrButton.disabled = busy;
+  countdown.classList.toggle('invisible', !live && !busy);
+  if (busy) {
+    // Without a value, the progress bar shows its loading animation.
+    countdown.removeAttribute('value');
+  }
 }
 
 async function keepScreenOn(): Promise<void> {
-  if (!('wakeLock' in navigator) || document.hidden || canvas.hidden || (wakeLock && !wakeLock.released)) {
+  if (!('wakeLock' in navigator) || document.hidden || deadline === undefined || (wakeLock && !wakeLock.released)) {
     return;
   }
   try {
@@ -44,20 +55,18 @@ async function keepScreenOn(): Promise<void> {
 function tick(): void {
   clearTimeout(timer);
   if (deadline === undefined) {
-    countdown.textContent = '';
     return;
   }
   const remaining = deadline - Date.now();
   if (remaining <= 0) {
     deadline = undefined;
-    showQr(false, '二維碼已過期。');
-    countdown.textContent = '';
+    render();
     if (!document.hidden) {
       void load();
     }
     return;
   }
-  countdown.textContent = `${Math.ceil(remaining / 1000)} 秒後自動更新`;
+  countdown.value = remaining;
   timer = window.setTimeout(tick, remaining % 1000 || 1000);
 }
 
@@ -66,33 +75,34 @@ async function load(): Promise<void> {
     return;
   }
   busy = true;
-  refreshButton.disabled = true;
-  status.textContent = '正在載入二維碼…';
+  clearTimeout(timer);
+  status.textContent = '';
+  render();
   try {
     const qr = await api<QrResponse>(`/api/s/${linkId}/qr`);
     const receivedAt = Date.now();
     // Byte mode keeps the exact UTF-8 bytes of the token that GREENS issued.
     await QRCode.toCanvas(canvas, [{ data: new TextEncoder().encode(qr.token), mode: 'byte' }], { width: 640 });
     deadline = receivedAt + qr.ttl * 1000;
-    byId('owner').textContent = `賬戶尾號 ${qr.mobileSuffix}`;
-    showQr(true);
-    status.textContent = '';
+    countdown.max = qr.ttl * 1000;
+    byId('owner').textContent = `•••• ${qr.mobileSuffix}`;
+    hasQr = true;
     void keepScreenOn();
   } catch (error) {
     if (!(error instanceof ApiError)) {
       throw error;
     }
     deadline = undefined;
-    showQr(false, '沒有可顯示的二維碼。');
+    hasQr = false;
     status.textContent = error.message;
   } finally {
     busy = false;
-    refreshButton.disabled = false;
+    render();
     tick();
   }
 }
 
-refreshButton.addEventListener('click', () => void load());
+qrButton.addEventListener('click', () => void load());
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
     return;
