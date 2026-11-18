@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "opengreens",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-11-18",
+  "assets": {
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  // vite.config.ts adds database_id and the custom domain from .env.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "opengreens"
+    }
+  ]
+}

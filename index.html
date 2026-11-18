@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-Hant-HK">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#17603e">
+  <title>綠綠賞二維碼分享</title>
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <script type="module" src="/src/main.ts"></script>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">綠綠賞 · 家人分享</p>
+      <h1>二維碼分享</h1>
+    </header>
+
+    <section id="sign-in" aria-labelledby="sign-in-title" hidden>
+      <h2 id="sign-in-title">以短訊驗證碼登入</h2>
+      <p id="reauth-note" class="notice" hidden>你的綠綠賞登入已失效，家人暫時無法顯示二維碼。請重新驗證。分享連結會保持不變。</p>
+      <form id="sms-form" autocomplete="off">
+        <label for="mobile">香港手機號碼</label>
+        <div class="mobile-field">
+          <span aria-hidden="true">+852</span>
+          <input id="mobile" type="tel" inputmode="numeric" maxlength="8" pattern="[4-9][0-9]{7}"
+            aria-describedby="mobile-hint" required>
+        </div>
+        <p id="mobile-hint" class="hint">請輸入以 4 至 9 開頭的 8 位數字。</p>
+        <button id="send" type="submit">發送驗證碼</button>
+      </form>
+
+      <form id="code-form" autocomplete="off" hidden>
+        <p id="code-hint"></p>
+        <label for="code">短訊驗證碼</label>
+        <input id="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="128"
+          spellcheck="false" required>
+        <div class="actions">
+          <button id="submit-code" type="submit">登入</button>
+          <button id="resend" type="button" class="secondary">重新發送</button>
+          <button id="change-number" type="button" class="secondary">更改號碼</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="account" aria-labelledby="account-title" hidden>
+      <h2 id="account-title" tabindex="-1">你的分享連結</h2>
+      <p id="account-mobile" class="hint"></p>
+      <label for="link">連結</label>
+      <input id="link" type="url" readonly>
+      <div class="actions">
+        <button id="share" type="button" hidden>分享</button>
+        <button id="copy" type="button">複製</button>
+        <a id="open" class="button secondary" target="_blank" rel="noreferrer">顯示二維碼</a>
+      </div>
+      <p class="hint">任何人取得此連結，都可以顯示你的綠綠賞二維碼。請只與家人分享。</p>
+      <button id="sign-out" type="button" class="secondary">登出</button>
+    </section>
+
+    <p id="status" role="status"></p>
+    <noscript>此網頁需要 JavaScript 才能運作。</noscript>
+  </main>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-Hant-HK">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#17603e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="綠綠賞二維碼">
+  <title>綠綠賞二維碼</title>
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <script type="module" src="/src/share.ts"></script>
+</head>
+<body>
+  <main class="share">
+    <header>
+      <p class="eyebrow">綠綠賞</p>
+      <h1>二維碼</h1>
+      <p id="owner" class="hint"></p>
+    </header>
+    <div class="qr-frame">
+      <canvas id="qr" role="img" aria-label="綠綠賞動態二維碼" hidden></canvas>
+      <p id="placeholder" class="hint">載入中…</p>
+    </div>
+    <p id="countdown"></p>
+    <button id="refresh" type="button">立即更新</button>
+    <p id="status" role="status"></p>
+    <noscript>此網頁需要 JavaScript 才能顯示二維碼。</noscript>
+  </main>
+</body>
+</html>

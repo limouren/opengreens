@@ -1,0 +1,30 @@
+{
+  "name": "opengreens",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "npm run build && vite preview",
+    "check": "tsc -b",
+    "types": "wrangler types",
+    "deploy": "npm run build && wrangler d1 migrations apply opengreens --remote && wrangler deploy"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.70.0",
+    "@types/node": "^26.6.6",
+    "@types/qrcode": "^1.5.6",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8",
+    "wrangler": "^4.165.0"
+  },
+  "dependencies": {
+    "qrcode": "^1.5.4",
+    "uuid": "^14.0.3"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "workerd@1.20261116.1": true,
+    "workerd@1.20261118.1": true
+  }
+}
