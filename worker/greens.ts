@@ -1,8 +1,8 @@
 const base = 'https://app.greenycoins.gov.hk/customer/api/v1/';
+
 // GREENS' CDN blocks requests without a User-Agent. These headers match the official app.
 const appHeaders = {
   'User-Agent': 'Dart/3.7 (dart:io)',
-  'Accept-Encoding': 'gzip',
   'Content-Type': 'application/json',
   'Accept-Language': 'en',
 };
